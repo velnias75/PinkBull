@@ -36,7 +36,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 public final class PlayerItemConsumeListener implements Listener {
 
 	private final PinkBullPlugin plugin;
-	private final long FLY_TICKS = 800L; // 18000L;
 
 	/**
 	 * 
@@ -68,7 +67,7 @@ public final class PlayerItemConsumeListener implements Listener {
 							+ ChatColor.RED + "-Flugmodus wird in 20 Sekunden beendet." + ChatColor.RESET);
 				}
 
-			}.runTaskLater(plugin, FLY_TICKS - 400L);
+			}.runTaskLater(plugin, PinkBullPlugin.FLY_TICKS - 400L);
 
 			new BukkitRunnable() {
 
@@ -77,7 +76,7 @@ public final class PlayerItemConsumeListener implements Listener {
 					plugin.setPlayerFlyAllowed(player, false);
 				}
 
-			}.runTaskLater(plugin, FLY_TICKS);
+			}.runTaskLater(plugin, PinkBullPlugin.FLY_TICKS);
 		}
 	}
 }
