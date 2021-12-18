@@ -19,24 +19,62 @@
 
 package de.rangun.pinkbull;
 
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.NamespacedKey;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.enchantments.EnchantmentTarget;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * @author heiko
  *
  */
-final class JoinListener extends PinkBullListener {
+final class Glow extends Enchantment {
 
 	/**
-	 * @param plugin
+	 * @param key
 	 */
-	protected JoinListener(PinkBullPlugin plugin) {
-		super(plugin);
+	public Glow(NamespacedKey key) {
+		super(key);
 	}
 
-	@EventHandler
-	public void onJoin(final PlayerJoinEvent event) {
-		plugin.setPlayerFlyAllowed(event.getPlayer(), false);
+	@Override
+	public String getName() {
+		return "GenericGlow";
 	}
+
+	@Override
+	public int getMaxLevel() {
+		return 0;
+	}
+
+	@Override
+	public int getStartLevel() {
+		return 0;
+	}
+
+	@Override
+	public EnchantmentTarget getItemTarget() {
+		return null;
+	}
+
+	@Override
+	public boolean isTreasure() {
+		return false;
+	}
+
+	@Override
+	public boolean isCursed() {
+		return false;
+	}
+
+	@Override
+	public boolean conflictsWith(Enchantment other) {
+		return false;
+	}
+
+	@Override
+	public boolean canEnchantItem(ItemStack item) {
+		return false;
+	}
+
 }

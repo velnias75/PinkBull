@@ -20,28 +20,25 @@
 package de.rangun.pinkbull;
 
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * @author heiko
  *
  */
-public final class PlayerItemConsumeListener implements Listener {
-
-	private final PinkBullPlugin plugin;
+final class PlayerItemConsumeListener extends PinkBullListener {
 
 	/**
-	 * 
+	 * @param plugin
 	 */
-	public PlayerItemConsumeListener(final PinkBullPlugin plugin) {
-		this.plugin = plugin;
+	protected PlayerItemConsumeListener(PinkBullPlugin plugin) {
+		super(plugin);
 	}
 
 	@EventHandler
@@ -53,30 +50,34 @@ public final class PlayerItemConsumeListener implements Listener {
 
 			Player player = ev.getPlayer();
 
+			if (GameMode.CREATIVE.equals(player.getGameMode())) {
+				return;
+			}
+
 			ev.setItem(new ItemStack(Material.AIR));
 			player.getWorld().playSound(player.getLocation(), Sound.BLOCK_GLASS_BREAK, 100.0f, 0.0f);
 
-			plugin.setPlayerFlyAllowed(player, true);
+			if (!plugin.hasPlayerFlyAllowed(player)) {
 
-			new BukkitRunnable() {
+				plugin.setPlayerFlyAllowed(player, true);
+				plugin.putPlayerToFlyMap(player,
 
-				@Override
-				public void run() {
-					player.playSound(player.getLocation(), Sound.ITEM_SHIELD_BREAK, 100.0f, 0.0f);
-					player.sendMessage(ChatColor.RED + "Dein " + ChatColor.BOLD + PinkBullPlugin.PINK_BULL_TEXT
-							+ ChatColor.RED + "-Flugmodus wird in 20 Sekunden beendet." + ChatColor.RESET);
-				}
+						new PinkBullRunnable(plugin, player) {
 
-			}.runTaskLater(plugin, PinkBullPlugin.FLY_TICKS - 400L);
+							@Override
+							public void action() {
+								plugin.setPlayerFlyAllowed(player, false);
+							}
 
-			new BukkitRunnable() {
+						}).runTaskLater(plugin, plugin.getFlyTicks());
 
-				@Override
-				public void run() {
-					plugin.setPlayerFlyAllowed(player, false);
-				}
+			} else {
 
-			}.runTaskLater(plugin, PinkBullPlugin.FLY_TICKS);
+				player.sendMessage("" + ChatColor.RED + ChatColor.BOLD
+						+ "Doppelt Fliegen lohnt sich nicht, sonst fällst Du auf Dein Gesicht.");
+				plugin.setPlayerFlyAllowed(player, false);
+
+			}
 		}
 	}
 }

@@ -19,24 +19,41 @@
 
 package de.rangun.pinkbull;
 
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 /**
  * @author heiko
  *
  */
-final class JoinListener extends PinkBullListener {
+final class CommandPinkBull implements CommandExecutor {
+
+	final PinkBullPlugin plugin;
 
 	/**
-	 * @param plugin
+	 * 
 	 */
-	protected JoinListener(PinkBullPlugin plugin) {
-		super(plugin);
+	public CommandPinkBull(final PinkBullPlugin plugin) {
+		this.plugin = plugin;
 	}
 
-	@EventHandler
-	public void onJoin(final PlayerJoinEvent event) {
-		plugin.setPlayerFlyAllowed(event.getPlayer(), false);
+	@Override
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+
+		if (sender instanceof Player) {
+
+			final Player player = (Player) sender;
+			player.getInventory().addItem(plugin.createPinkBullPotion());
+
+		} else {
+			sender.sendMessage("" + ChatColor.YELLOW + ChatColor.BOLD + "/pinkbull" + ChatColor.RESET + ChatColor.YELLOW
+					+ " kann nur von einem Spieler ausgeführt werden.");
+		}
+
+		return true;
 	}
+
 }

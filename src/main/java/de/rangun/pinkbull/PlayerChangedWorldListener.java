@@ -19,24 +19,34 @@
 
 package de.rangun.pinkbull;
 
+import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 
 /**
  * @author heiko
  *
  */
-final class JoinListener extends PinkBullListener {
+final class PlayerChangedWorldListener extends PinkBullListener {
 
 	/**
 	 * @param plugin
 	 */
-	protected JoinListener(PinkBullPlugin plugin) {
+	protected PlayerChangedWorldListener(PinkBullPlugin plugin) {
 		super(plugin);
 	}
 
 	@EventHandler
-	public void onJoin(final PlayerJoinEvent event) {
-		plugin.setPlayerFlyAllowed(event.getPlayer(), false);
+	public void onPlayerChangedWorld(final PlayerChangedWorldEvent ev) {
+
+		final Player player = ev.getPlayer();
+
+		if (World.Environment.NORMAL.equals(ev.getFrom().getEnvironment())) {
+
+			if (plugin.hasPlayerFlyAllowed(player)) {
+				plugin.setPlayerFlyAllowed(player, false);
+			}
+		}
 	}
 }

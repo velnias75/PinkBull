@@ -19,24 +19,40 @@
 
 package de.rangun.pinkbull;
 
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.entity.Player;
+import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * @author heiko
  *
  */
-final class JoinListener extends PinkBullListener {
+abstract class PinkBullRunnable extends BukkitRunnable {
+
+	protected final PinkBullPlugin plugin;
+	protected final Player player;
 
 	/**
-	 * @param plugin
+	 * 
 	 */
-	protected JoinListener(PinkBullPlugin plugin) {
-		super(plugin);
+	protected PinkBullRunnable(final PinkBullPlugin plugin, final Player player) {
+		this.plugin = plugin;
+		this.player = player;
 	}
 
-	@EventHandler
-	public void onJoin(final PlayerJoinEvent event) {
-		plugin.setPlayerFlyAllowed(event.getPlayer(), false);
+	protected abstract void action();
+
+	@Override
+	public final void run() {
+
+		final Long cur = player.getPersistentDataContainer().get(plugin.getPinkBullPotionKey(),
+				PersistentDataType.LONG);
+
+		if (cur <= 0L) {
+			this.cancel();
+		} else {
+			action();
+		}
+
 	}
 }

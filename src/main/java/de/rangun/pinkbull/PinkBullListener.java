@@ -19,24 +19,20 @@
 
 package de.rangun.pinkbull;
 
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.Listener;
 
 /**
  * @author heiko
  *
  */
-final class JoinListener extends PinkBullListener {
+abstract class PinkBullListener implements Listener {
+
+	protected final PinkBullPlugin plugin;
 
 	/**
-	 * @param plugin
+	 * 
 	 */
-	protected JoinListener(PinkBullPlugin plugin) {
-		super(plugin);
-	}
-
-	@EventHandler
-	public void onJoin(final PlayerJoinEvent event) {
-		plugin.setPlayerFlyAllowed(event.getPlayer(), false);
+	protected PinkBullListener(final PinkBullPlugin plugin) {
+		this.plugin = plugin;
 	}
 }

@@ -36,7 +36,7 @@ import com.google.common.collect.Lists;
  * @author heiko
  *
  */
-public final class CommandFly implements CommandExecutor, TabCompleter {
+final class CommandFly implements CommandExecutor, TabCompleter {
 
 	final PinkBullPlugin plugin;
 
@@ -59,16 +59,15 @@ public final class CommandFly implements CommandExecutor, TabCompleter {
 			}
 
 			if (player != null) {
-
 				plugin.setPlayerFlyAllowed(player, !plugin.hasPlayerFlyAllowed(player), (Player) sender);
-
 			} else {
 				sender.sendMessage(ChatColor.RED + "Spieler " + ChatColor.AQUA + ChatColor.BOLD + args[0]
 						+ ChatColor.RESET + ChatColor.RED + " nicht gefunden.");
 			}
 
 		} else {
-			sender.sendMessage("Befehl kann nur von einem Spieler ausgeführt werden.");
+			sender.sendMessage("" + ChatColor.YELLOW + ChatColor.BOLD + "/fly" + ChatColor.RESET + ChatColor.YELLOW
+					+ " kann nur von einem Spieler ausgeführt werden.");
 		}
 
 		return true;
