@@ -55,21 +55,11 @@ final class PlayerItemConsumeListener extends PinkBullListener {
 			}
 
 			ev.setItem(new ItemStack(Material.AIR));
-			player.getWorld().playSound(player.getLocation(), Sound.BLOCK_GLASS_BREAK, 100.0f, 0.0f);
+			player.getWorld().playSound(player.getLocation(), Sound.BLOCK_GLASS_BREAK, 1.0f, 0.0f);
 
 			if (!plugin.hasPlayerFlyAllowed(player)) {
 
 				plugin.setPlayerFlyAllowed(player, true);
-				plugin.putPlayerToFlyMap(player,
-
-						new PinkBullRunnable(plugin, player) {
-
-							@Override
-							public void action() {
-								plugin.setPlayerFlyAllowed(player, false);
-							}
-
-						}).runTaskLater(plugin, plugin.getFlyTicks());
 
 			} else {
 

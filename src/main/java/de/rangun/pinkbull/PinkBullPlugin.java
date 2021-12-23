@@ -21,9 +21,7 @@ package de.rangun.pinkbull;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -55,7 +53,6 @@ import org.bukkit.plugin.java.annotation.plugin.Website;
 import org.bukkit.plugin.java.annotation.plugin.author.Author;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -72,15 +69,11 @@ import org.bukkit.scoreboard.Team;
 @Command(name = "pinkbull", desc = "Gibt dem Spieler einen PinkBull-Trank", usage = "/pinkbull", permission = "pinkbull.pinkbull")
 public final class PinkBullPlugin extends JavaPlugin {
 
+	private final static String PINK_BULL_TEXT = ChatColor.LIGHT_PURPLE + "Pink Bull" + ChatColor.RESET;
+
 	private final NamespacedKey PINK_BULL_POTION_KEY = new NamespacedKey(this, "pink_bull_potion");
-
-	private Scoreboard sb = null;
-
-	final static String PINK_BULL_TEXT = ChatColor.LIGHT_PURPLE + "Pink Bull" + ChatColor.RESET;
-
 	private final FileConfiguration config = getConfig();
-
-	private final Map<Player, BukkitRunnable> flyMap = new HashMap<>();
+	private Scoreboard sb = null;
 
 	@Override
 	public void onEnable() {
@@ -161,10 +154,14 @@ public final class PinkBullPlugin extends JavaPlugin {
 	}
 
 	void setPlayerFlyAllowed(final Player player, boolean allow) {
-		setPlayerFlyAllowed(player, allow, null);
+		setPlayerFlyAllowed(player, allow, null, true);
 	}
 
 	void setPlayerFlyAllowed(final Player player, boolean allow, final Player donor) {
+		setPlayerFlyAllowed(player, allow, donor, true);
+	}
+
+	void setPlayerFlyAllowed(final Player player, boolean allow, final Player donor, final boolean flyEndMsg) {
 
 		final KeyedBossBar bar;
 
@@ -208,16 +205,24 @@ public final class PinkBullPlugin extends JavaPlugin {
 								cur < 20L ? 0L : (cur - 20L));
 
 						if (!hasPlayerFlyAllowed(player)) {
-
-							player.getPersistentDataContainer().set(PINK_BULL_POTION_KEY, PersistentDataType.LONG,
-									getFlyTicks());
+							player.getPersistentDataContainer().set(PINK_BULL_POTION_KEY, PersistentDataType.LONG, 0L);
 							this.cancel();
+						}
 
-						} else if (cur == 400L) {
+						if (cur == 400L) {
 
-							player.playSound(player.getLocation(), Sound.ITEM_SHIELD_BREAK, 100.0f, 0.0f);
+							player.playSound(player.getLocation(), Sound.ITEM_SHIELD_BREAK, 1.0f, 1.0f);
+
 							player.sendMessage(ChatColor.RED + "Dein " + ChatColor.BOLD + PinkBullPlugin.PINK_BULL_TEXT
-									+ ChatColor.RED + "-Flugmodus wird in 20 Sekunden beendet." + ChatColor.RESET);
+									+ ChatColor.RED + "-Flugmodus wird " + ChatColor.BOLD + "in Kürze" + ChatColor.RESET
+									+ ChatColor.RED + " beendet." + ChatColor.RESET);
+						}
+
+						if (cur <= 20L) {
+
+							removeBossBar(player, flyEndMsg);
+							player.setAllowFlight(false);
+							this.cancel();
 						}
 					}
 
@@ -230,49 +235,49 @@ public final class PinkBullPlugin extends JavaPlugin {
 			} else {
 
 				if (!donor.equals(player)) {
-
 					getServer().broadcastMessage(
 							msg + "von " + getTeamFormattedPlayerDisplayName(donor) + ChatColor.GREEN + " ein "
 									+ PINK_BULL_TEXT + ChatColor.GREEN + "-Flugeffekt erhalten und kann nun fliegen!");
 				} else {
-
 					player.sendMessage(
 							ChatColor.GREEN + "Du hast nun den " + PINK_BULL_TEXT + ChatColor.GREEN + "-Effekt.");
 				}
 			}
 
 		} else if (hasPlayerFlyAllowed(player)) {
-
-			player.sendMessage(ChatColor.RED + "Du hast " + ChatColor.BOLD + "kein " + ChatColor.RESET + PINK_BULL_TEXT
-					+ ChatColor.RED + "-Flugeffekt mehr!" + ChatColor.RESET);
-
-			player.getLocation().getWorld().playEffect(player.getEyeLocation(), Effect.SMOKE, 1);
-
-			final NamespacedKey bosskey = createPlayerBossbarKey(player);
-
-			bar = getServer().getBossBar(bosskey);
-
-			if (bar != null) {
-
-				bar.removePlayer(player);
-				bar.setVisible(false);
-
-				getServer().removeBossBar(bosskey);
-			}
-
-		} else if (!allow) {
-
-			final BukkitRunnable br = removePlayerFromFlyMap(player);
-
-			if (br != null) {
-				br.cancel();
-			}
+			removeBossBar(player, flyEndMsg);
+		} else if (!allow && flyEndMsg) {
+			flyEndMessage(player);
 		}
 
 		player.setAllowFlight(allow);
-
 		player.getPersistentDataContainer().set(PINK_BULL_POTION_KEY, PersistentDataType.LONG,
-				allow ? getFlyTicks() : 0L);
+				allow ? (donor == null ? getFlyTicks() : -1L) : 0L);
+	}
+
+	private void flyEndMessage(final Player player) {
+		player.sendMessage(ChatColor.RED + "Du hast " + ChatColor.BOLD + "kein " + ChatColor.RESET + PINK_BULL_TEXT
+				+ ChatColor.RED + "-Flugeffekt mehr!" + ChatColor.RESET);
+
+		player.getLocation().getWorld().playEffect(player.getEyeLocation(), Effect.SMOKE, 1);
+	}
+
+	private void removeBossBar(final Player player, final boolean flyEndMsg) {
+
+		if (flyEndMsg) {
+			flyEndMessage(player);
+		}
+
+		final NamespacedKey bosskey = createPlayerBossbarKey(player);
+		final KeyedBossBar bossbar = getServer().getBossBar(bosskey);
+
+		if (bossbar != null) {
+
+			bossbar.removePlayer(player);
+			bossbar.setVisible(false);
+
+			getServer().removeBossBar(bosskey);
+		}
 	}
 
 	private NamespacedKey createPlayerBossbarKey(final Player player) {
@@ -305,7 +310,7 @@ public final class PinkBullPlugin extends JavaPlugin {
 		}
 	}
 
-	String getTeamFormattedPlayerDisplayName(final Player player) {
+	private String getTeamFormattedPlayerDisplayName(final Player player) {
 
 		if (sb != null) {
 
@@ -320,16 +325,7 @@ public final class PinkBullPlugin extends JavaPlugin {
 		return "" + ChatColor.AQUA + ChatColor.BOLD + player.getDisplayName() + ChatColor.RESET;
 	}
 
-	BukkitRunnable putPlayerToFlyMap(final Player player, final BukkitRunnable runnable) {
-		flyMap.put(player, runnable);
-		return runnable;
-	}
-
-	BukkitRunnable removePlayerFromFlyMap(final Player player) {
-		return flyMap.remove(player);
-	}
-
-	long getFlyTicks() {
+	private long getFlyTicks() {
 		return Math.max(800L, config.getLong("fly_ticks"));
 	}
 
@@ -338,6 +334,6 @@ public final class PinkBullPlugin extends JavaPlugin {
 		final long minutes = getFlyTicks() / (20L * 60L);
 		final long seconds = (getFlyTicks() - (minutes * 20L * 60L)) / 20L;
 
-		return String.format("%d:%02d", minutes, seconds);
+		return String.format("%d%s", minutes, seconds != 0L ? String.format(":%02d", seconds) : "");
 	}
 }

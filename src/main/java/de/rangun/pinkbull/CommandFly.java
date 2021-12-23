@@ -28,6 +28,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.util.StringUtil;
 
 import com.google.common.collect.Lists;
@@ -59,7 +60,15 @@ final class CommandFly implements CommandExecutor, TabCompleter {
 			}
 
 			if (player != null) {
-				plugin.setPlayerFlyAllowed(player, !plugin.hasPlayerFlyAllowed(player), (Player) sender);
+
+				final boolean flyAllowed = plugin.hasPlayerFlyAllowed(player) || player.getPersistentDataContainer()
+						.get(plugin.getPinkBullPotionKey(), PersistentDataType.LONG) == -1L;
+
+				player.getPersistentDataContainer().set(plugin.getPinkBullPotionKey(), PersistentDataType.LONG,
+						flyAllowed ? 0L : -1L);
+
+				plugin.setPlayerFlyAllowed(player, !flyAllowed, (Player) sender);
+
 			} else {
 				sender.sendMessage(ChatColor.RED + "Spieler " + ChatColor.AQUA + ChatColor.BOLD + args[0]
 						+ ChatColor.RESET + ChatColor.RED + " nicht gefunden.");
