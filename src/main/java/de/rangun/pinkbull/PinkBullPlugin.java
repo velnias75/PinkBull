@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Color;
@@ -106,6 +107,9 @@ public final class PinkBullPlugin extends JavaPlugin {
 		getCommand("fly").setTabCompleter(fly);
 
 		getCommand("pinkbull").setExecutor(pb);
+
+		final int pluginId = 15208;
+		new Metrics(this, pluginId);
 	}
 
 	@Override

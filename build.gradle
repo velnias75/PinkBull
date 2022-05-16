@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
 }
 
 apply plugin: 'java'
@@ -41,11 +42,35 @@ dependencies {
 	}
 	annotationProcessor "org.spigotmc:plugin-annotations:${project.plugins_annotation_version}"
 	
+	implementation "org.bstats:bstats-bukkit:${project.bstats_version}"
+	shadow "org.bstats:bstats-bukkit:${project.bstats_version}"
+	
 	compileOnly "com.google.code.findbugs:annotations:${project.findbugs_version}"
 	annotationProcessor "com.google.code.findbugs:annotations:${project.findbugs_version}"
 	
 	testImplementation "org.spigotmc:spigot-api:${project.spigot_version}"
 	testImplementation "junit:junit:${project.junit_version}"
+}
+
+shadowJar {
+
+	archiveClassifier.set('')    
+    relocate 'org.bstats', 'de.rangun.pinkbull.shadowed.org.bstats'
+
+    //Exclude META-INF entries of shaded deps
+    exclude 'META-INF/**'
+    exclude '**/*.pdn'
+    exclude '**/*.bbmodel'
+    from('.') {
+        include 'LICENSE.md'
+		include 'NOTICE.txt'
+		include 'licenses/**'
+    }
+    minimize()
+}
+
+assemble {
+	dependsOn shadowJar
 }
 
 test {
