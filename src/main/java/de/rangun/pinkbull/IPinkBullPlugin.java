@@ -41,4 +41,11 @@ public interface IPinkBullPlugin {
 
 	void setPlayerFlyAllowed(final Player player, boolean allow, final Player donor, final boolean flyEndMsg);
 
+	String getMessage(final String key);
+
+	String getMessage(final String key, final String player);
+
+	String getMessage(final String key, final Player player);
+
+	String getMessage(final String key, final Player player, final Player donor);
 }

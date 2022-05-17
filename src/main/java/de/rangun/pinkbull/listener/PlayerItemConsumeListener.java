@@ -19,7 +19,6 @@
 
 package de.rangun.pinkbull.listener;
 
-import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -65,8 +64,7 @@ public final class PlayerItemConsumeListener extends PinkBullListener {
 
 			} else {
 
-				player.sendMessage("" + ChatColor.RED + ChatColor.BOLD
-						+ "Doppelt Fliegen lohnt sich nicht, sonst fällst Du auf Dein Gesicht.");
+				player.sendMessage(plugin.getMessage("PinkBull_double_quaff"));
 				plugin.setPlayerFlyAllowed(player, false);
 
 			}

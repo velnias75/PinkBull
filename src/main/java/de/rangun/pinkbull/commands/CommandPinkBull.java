@@ -19,7 +19,6 @@
 
 package de.rangun.pinkbull.commands;
 
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -51,8 +50,7 @@ public final class CommandPinkBull implements CommandExecutor {
 			player.getInventory().addItem(plugin.createPinkBullPotion());
 
 		} else {
-			sender.sendMessage("" + ChatColor.YELLOW + ChatColor.BOLD + "/pinkbull" + ChatColor.RESET + ChatColor.YELLOW
-					+ " kann nur von einem Spieler ausgeführt werden.");
+			sender.sendMessage(plugin.getMessage("PinkBull_only_player_exec_pinkbull"));
 		}
 
 		return true;

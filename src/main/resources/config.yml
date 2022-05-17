@@ -1,2 +1,7 @@
-# tbw
+# Language of the plugin
+# en: (default): English
+# de: German / deutsch
+language: en
+
+# How long the PinkBull-effect should endure (in ticks)
 fly_ticks: 18000

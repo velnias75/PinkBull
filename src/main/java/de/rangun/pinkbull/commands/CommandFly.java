@@ -22,7 +22,6 @@ package de.rangun.pinkbull.commands;
 import java.util.List;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -72,13 +71,11 @@ public final class CommandFly implements CommandExecutor, TabCompleter {
 				plugin.setPlayerFlyAllowed(player, !flyAllowed, (Player) sender);
 
 			} else {
-				sender.sendMessage(ChatColor.RED + "Spieler " + ChatColor.AQUA + ChatColor.BOLD + args[0]
-						+ ChatColor.RESET + ChatColor.RED + " nicht gefunden.");
+				sender.sendMessage(plugin.getMessage("PinkBull_player_not_found", args[0]));
 			}
 
 		} else {
-			sender.sendMessage("" + ChatColor.YELLOW + ChatColor.BOLD + "/fly" + ChatColor.RESET + ChatColor.YELLOW
-					+ " kann nur von einem Spieler ausgeführt werden.");
+			sender.sendMessage(plugin.getMessage("PinkBull_only_player_exec_fly"));
 		}
 
 		return true;

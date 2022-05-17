@@ -1,24 +1,27 @@
-/*
- * Copyright 2021-2022 by Heiko Schäfer <heiko@rangun.de>
- *
- * This file is part of PinkBull.
- *
- * PinkBull is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as
- * published by the Free Software Foundation, either version 3 of
- * the License, or (at your option) any later version.
- *
- * PinkBull is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with PinkBull.  If not, see <http://www.gnu.org/licenses/>.
- */
+/* Copyright 2021-2022 by Heiko Schäfer <heiko@rangun.de>
+*
+* This file is part of PinkBull.
+*
+* PinkBull is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as
+* published by the Free Software Foundation, either version 3 of
+* the License, or (at your option) any later version.
+*
+* PinkBull is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public License
+* along with PinkBull.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 package de.rangun.pinkbull;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +41,7 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.KeyedBossBar;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -64,16 +68,38 @@ import de.rangun.pinkbull.utils.PinkBullRunnable;
  */
 public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin {
 
-	private final static String PINK_BULL_TEXT = ChatColor.LIGHT_PURPLE + "Pink Bull" + ChatColor.RESET;
-
 	private final NamespacedKey PINK_BULL_POTION_KEY = new NamespacedKey(this, "pink_bull_potion");
 	private final FileConfiguration config = getConfig();
+	private FileConfiguration messages = null;
 	private Scoreboard sb = null;
+
+	private final static String PINK_BULL_TEXT = ChatColor.LIGHT_PURPLE + "Pink Bull" + ChatColor.RESET;
 
 	@Override
 	public void onEnable() {
 
 		registerGlow();
+
+		Reader messageStream = null;
+
+		try {
+
+			InputStream is = this.getResource("messages_" + config.getString("language", "en") + ".yml");
+
+			if (is == null) {
+				is = this.getResource("messages_en.yml");
+				Bukkit.getLogger().warning("[" + getName() + "] Language \"" + config.getString("language")
+						+ "\" not supported, falling back to \"en\".");
+			}
+
+			messageStream = new InputStreamReader(is, "UTF8");
+
+		} catch (UnsupportedEncodingException e) {
+		}
+
+		if (messageStream != null) {
+			messages = YamlConfiguration.loadConfiguration(messageStream);
+		}
 
 		saveDefaultConfig();
 
@@ -126,11 +152,10 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 		final Glow glow = new Glow(new NamespacedKey(this, getDescription().getName()));
 		final List<String> lore = new ArrayList<>();
 
-		lore.add(PINK_BULL_TEXT + " verleiht " + ChatColor.BLUE + "Flüüüüüüügel!" + ChatColor.RESET);
+		lore.add(getMessage("PinkBull_slogan"));
 		lore.add("");
-		lore.add(ChatColor.RESET + "Dieser berauschende Trank verleiht");
-		lore.add(ChatColor.RESET + "Dir für " + ChatColor.BOLD + flyTicksToMinutes() + " Minuten" + ChatColor.RESET
-				+ " Flügel.");
+		lore.add(getMessage("PinkBull_lore_duration_line_1"));
+		lore.add(getMessage("PinkBull_lore_duration_line_2"));
 		lore.add("");
 
 		meta.setLore(lore);
@@ -174,14 +199,9 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 		if (allow) {
 
 			if (donor == null && !Environment.NORMAL.equals(player.getWorld().getEnvironment())) {
-
-				player.sendMessage("" + ChatColor.RED + ChatColor.ITALIC + "Sorry mein Freund," + ChatColor.RESET
-						+ ChatColor.RED + " Dein " + PINK_BULL_TEXT + ChatColor.RED
-						+ " hat außerhalb der Oberwelt keinen Effekt!");
+				player.sendMessage(getMessage("PinkBull_dimension"));
 				return;
 			}
-
-			final String msg = getTeamFormattedPlayerDisplayName(player) + ChatColor.GREEN + " hat ";
 
 			if (donor == null) {
 
@@ -214,10 +234,7 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 						if (cur == 400L) {
 
 							player.playSound(player.getLocation(), Sound.ITEM_SHIELD_BREAK, 1.0f, 1.0f);
-
-							player.sendMessage(ChatColor.RED + "Dein " + ChatColor.BOLD + PinkBullPlugin.PINK_BULL_TEXT
-									+ ChatColor.RED + "-Flugmodus wird " + ChatColor.BOLD + "in Kürze" + ChatColor.RESET
-									+ ChatColor.RED + " beendet." + ChatColor.RESET);
+							player.sendMessage(getMessage("PinkBull_fly_end_warn"));
 						}
 
 						if (cur <= 20L) {
@@ -230,19 +247,14 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 
 				}.runTaskTimer(this, 20L, 20L);
 
-				getServer().broadcastMessage(msg + "ein " + PinkBullPlugin.PINK_BULL_TEXT + ChatColor.GREEN
-						+ " getrunken und kann nun " + ChatColor.BOLD + flyTicksToMinutes() + " Minuten"
-						+ ChatColor.RESET + ChatColor.GREEN + " fliegen!");
+				getServer().broadcastMessage(getMessage("Pinkbull_quaffed", player));
 
 			} else {
 
 				if (!donor.equals(player)) {
-					getServer().broadcastMessage(
-							msg + "von " + getTeamFormattedPlayerDisplayName(donor) + ChatColor.GREEN + " ein "
-									+ PINK_BULL_TEXT + ChatColor.GREEN + "-Flugeffekt erhalten und kann nun fliegen!");
+					getServer().broadcastMessage(getMessage("PinkBull_donor", player, donor));
 				} else {
-					player.sendMessage(
-							ChatColor.GREEN + "Du hast nun den " + PINK_BULL_TEXT + ChatColor.GREEN + "-Effekt.");
+					player.sendMessage(getMessage("PinkBull_effect"));
 				}
 			}
 
@@ -258,9 +270,8 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 	}
 
 	private void flyEndMessage(final Player player) {
-		player.sendMessage(ChatColor.RED + "Du hast " + ChatColor.BOLD + "kein " + ChatColor.RESET + PINK_BULL_TEXT
-				+ ChatColor.RED + "-Flugeffekt mehr!" + ChatColor.RESET);
 
+		player.sendMessage(getMessage("PinkBull_fly_end"));
 		player.getLocation().getWorld().playEffect(player.getEyeLocation(), Effect.SMOKE, 1);
 	}
 
@@ -310,6 +321,35 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 		} catch (Exception e) {
 			Bukkit.getLogger().log(Level.WARNING, "Exception in registering Glow", e);
 		}
+	}
+
+	@Override
+	public String getMessage(final String key) {
+		return getMessage(key, null, null, null);
+	}
+
+	@Override
+	public String getMessage(final String key, final String player) {
+		return getMessage(key, null, null, player);
+	}
+
+	@Override
+	public String getMessage(final String key, final Player player) {
+		return getMessage(key, player, null, null);
+	}
+
+	@Override
+	public String getMessage(final String key, final Player player, final Player donor) {
+		return getMessage(key, player, donor, null);
+	}
+
+	private String getMessage(final String key, final Player player, final Player donor, final String player_s) {
+		return (messages.getString(key) + ChatColor.RESET).replace("\\n", "\n").replace("{PinkBull}", PINK_BULL_TEXT)
+				.replace("{fly_ticks}", flyTicksToMinutes())
+				.replace("{player}",
+						player == null ? (player_s == null ? "<null>" : player_s)
+								: getTeamFormattedPlayerDisplayName(player))
+				.replace("{donor}", donor == null ? "<null>" : getTeamFormattedPlayerDisplayName(donor));
 	}
 
 	private String getTeamFormattedPlayerDisplayName(final Player player) {
