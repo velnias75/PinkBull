@@ -1,3 +1,5 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 plugins {
     id 'java'
     id 'com.github.johnrengelman.shadow' version '7.1.2'
@@ -6,7 +8,7 @@ plugins {
 apply plugin: 'java'
 
 archivesBaseName = 'PinkBull'
-version = '0.0-SNAPSHOT'
+version = '1.0-SNAPSHOT'
 
 repositories {
 	mavenLocal()
@@ -36,11 +38,6 @@ java {
 dependencies {
 
 	compileOnly "org.spigotmc:spigot-api:${project.spigot_version}"
-
-	compileOnly("org.spigotmc:plugin-annotations:${project.plugins_annotation_version}") {
-		exclude module: "bukkit"
-	}
-	annotationProcessor "org.spigotmc:plugin-annotations:${project.plugins_annotation_version}"
 	
 	implementation "org.bstats:bstats-bukkit:${project.bstats_version}"
 	shadow "org.bstats:bstats-bukkit:${project.bstats_version}"
@@ -50,6 +47,13 @@ dependencies {
 	
 	testImplementation "org.spigotmc:spigot-api:${project.spigot_version}"
 	testImplementation "junit:junit:${project.junit_version}"
+}
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+    	duplicatesStrategy = 'include'
+        filter ReplaceTokens, tokens: [version: version]
+    }
 }
 
 shadowJar {

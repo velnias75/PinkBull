@@ -45,13 +45,6 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.plugin.java.annotation.command.Command;
-import org.bukkit.plugin.java.annotation.plugin.ApiVersion;
-import org.bukkit.plugin.java.annotation.plugin.ApiVersion.Target;
-import org.bukkit.plugin.java.annotation.plugin.Description;
-import org.bukkit.plugin.java.annotation.plugin.Plugin;
-import org.bukkit.plugin.java.annotation.plugin.Website;
-import org.bukkit.plugin.java.annotation.plugin.author.Author;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Scoreboard;
@@ -61,13 +54,13 @@ import org.bukkit.scoreboard.Team;
  * @author heiko
  *
  */
-@Plugin(name = "PinkBull", version = "0.0-SNAPSHOT")
-@Description(value = "PinkBull verleiht Flügel!")
-@Website(value = "https://github.com/velnias75/PinkBull")
-@ApiVersion(Target.v1_17)
-@Author(value = "Velnias75")
-@Command(name = "fly", desc = "Setzt oder nimmt Spieler in den bzw. aus dem Flugmodus", usage = "/fly [player]", permission = "pinkbull.fly")
-@Command(name = "pinkbull", desc = "Gibt dem Spieler einen PinkBull-Trank", usage = "/pinkbull", permission = "pinkbull.pinkbull")
+//@Plugin(name = "PinkBull", version = "0.0-SNAPSHOT")
+//@Description(value = "PinkBull verleiht Flügel!")
+//@Website(value = "https://github.com/velnias75/PinkBull")
+//@ApiVersion(Target.v1_17)
+//@Author(value = "Velnias75")
+//@Command(name = "fly", desc = "Setzt oder nimmt Spieler in den bzw. aus dem Flugmodus", usage = "/fly [player]", permission = "pinkbull.fly")
+//@Command(name = "pinkbull", desc = "Gibt dem Spieler einen PinkBull-Trank", usage = "/pinkbull", permission = "pinkbull.pinkbull")
 public final class PinkBullPlugin extends JavaPlugin {
 
 	private final static String PINK_BULL_TEXT = ChatColor.LIGHT_PURPLE + "Pink Bull" + ChatColor.RESET;
@@ -81,9 +74,10 @@ public final class PinkBullPlugin extends JavaPlugin {
 
 		registerGlow();
 
-		config.addDefault("fly_ticks", 18000L);
-		config.options().copyDefaults(true);
-		saveConfig();
+		// config.addDefault("fly_ticks", 18000L);
+		// config.options().copyDefaults(true);
+		// saveConfig();
+		saveDefaultConfig();
 
 		sb = Bukkit.getScoreboardManager().getMainScoreboard();
 

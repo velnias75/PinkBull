@@ -1,0 +1,16 @@
+main: de.rangun.pinkbull.PinkBullPlugin
+name: PinkBull
+version: '@version@'
+description: PinkBull verleiht Flügel!
+author: Velnias75
+website: https://github.com/velnias75/PinkBull
+commands:
+  fly:
+    description: Setzt oder nimmt Spieler in den bzw. aus dem Flugmodus
+    permission: pinkbull.fly
+    usage: /fly [player]
+  pinkbull:
+    description: Gibt dem Spieler einen PinkBull-Trank
+    permission: pinkbull.pinkbull
+    usage: /pinkbull
+api-version: '1.17'
