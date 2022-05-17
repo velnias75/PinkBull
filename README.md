@@ -6,6 +6,8 @@ The duration of the effect is configurable (defaults to 15 minutes).
 
 Languages English or German.
 
+**Minecraft version `1.17+`**
+
 ## Recipe
 ![Screenshot_20220517_125952](https://user-images.githubusercontent.com/4481414/168797514-3df530dc-9ebb-4831-bab7-97b0120094da.png)
 
