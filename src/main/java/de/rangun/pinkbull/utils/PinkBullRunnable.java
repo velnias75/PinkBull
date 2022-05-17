@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 by Heiko Schäfer <heiko@rangun.de>
+ * Copyright 2021-2022 by Heiko Schäfer <heiko@rangun.de>
  *
  * This file is part of PinkBull.
  *
@@ -17,43 +17,44 @@
  * along with PinkBull.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.rangun.pinkbull;
+package de.rangun.pinkbull.utils;
 
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import de.rangun.pinkbull.IPinkBullPlugin;
 
 /**
  * @author heiko
  *
  */
-final class CommandPinkBull implements CommandExecutor {
+public abstract class PinkBullRunnable extends BukkitRunnable {
 
-	final PinkBullPlugin plugin;
+	protected final IPinkBullPlugin plugin;
+	protected final Player player;
 
 	/**
 	 * 
 	 */
-	public CommandPinkBull(final PinkBullPlugin plugin) {
+	protected PinkBullRunnable(final IPinkBullPlugin plugin, final Player player) {
 		this.plugin = plugin;
+		this.player = player;
 	}
+
+	protected abstract void action();
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+	public final void run() {
 
-		if (sender instanceof Player) {
+		final Long cur = player.getPersistentDataContainer().get(plugin.getPinkBullPotionKey(),
+				PersistentDataType.LONG);
 
-			final Player player = (Player) sender;
-			player.getInventory().addItem(plugin.createPinkBullPotion());
-
+		if (cur <= 0L) {
+			this.cancel();
 		} else {
-			sender.sendMessage("" + ChatColor.YELLOW + ChatColor.BOLD + "/pinkbull" + ChatColor.RESET + ChatColor.YELLOW
-					+ " kann nur von einem Spieler ausgeführt werden.");
+			action();
 		}
 
-		return true;
 	}
-
 }

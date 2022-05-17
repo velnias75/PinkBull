@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 by Heiko Schäfer <heiko@rangun.de>
+ * Copyright 2021-2022 by Heiko Schäfer <heiko@rangun.de>
  *
  * This file is part of PinkBull.
  *
@@ -17,42 +17,38 @@
  * along with PinkBull.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.rangun.pinkbull;
+package de.rangun.pinkbull.listener;
 
+import org.bukkit.World;
 import org.bukkit.entity.Player;
-import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
+
+import de.rangun.pinkbull.IPinkBullPlugin;
 
 /**
  * @author heiko
  *
  */
-abstract class PinkBullRunnable extends BukkitRunnable {
-
-	protected final PinkBullPlugin plugin;
-	protected final Player player;
+public final class PlayerChangedWorldListener extends PinkBullListener {
 
 	/**
-	 * 
+	 * @param plugin
 	 */
-	protected PinkBullRunnable(final PinkBullPlugin plugin, final Player player) {
-		this.plugin = plugin;
-		this.player = player;
+	public PlayerChangedWorldListener(IPinkBullPlugin plugin) {
+		super(plugin);
 	}
 
-	protected abstract void action();
+	@EventHandler
+	public void onPlayerChangedWorld(final PlayerChangedWorldEvent ev) {
 
-	@Override
-	public final void run() {
+		final Player player = ev.getPlayer();
 
-		final Long cur = player.getPersistentDataContainer().get(plugin.getPinkBullPotionKey(),
-				PersistentDataType.LONG);
+		if (World.Environment.NORMAL.equals(ev.getFrom().getEnvironment())) {
 
-		if (cur <= 0L) {
-			this.cancel();
-		} else {
-			action();
+			if (plugin.hasPlayerFlyAllowed(player)) {
+				plugin.setPlayerFlyAllowed(player, false);
+			}
 		}
-
 	}
 }

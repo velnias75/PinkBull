@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 by Heiko Schäfer <heiko@rangun.de>
+ * Copyright 2021-2022 by Heiko Schäfer <heiko@rangun.de>
  *
  * This file is part of PinkBull.
  *
@@ -17,7 +17,7 @@
  * along with PinkBull.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.rangun.pinkbull;
+package de.rangun.pinkbull.listener;
 
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -28,16 +28,18 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 
+import de.rangun.pinkbull.IPinkBullPlugin;
+
 /**
  * @author heiko
  *
  */
-final class PlayerItemConsumeListener extends PinkBullListener {
+public final class PlayerItemConsumeListener extends PinkBullListener {
 
 	/**
 	 * @param plugin
 	 */
-	protected PlayerItemConsumeListener(PinkBullPlugin plugin) {
+	public PlayerItemConsumeListener(IPinkBullPlugin plugin) {
 		super(plugin);
 	}
 

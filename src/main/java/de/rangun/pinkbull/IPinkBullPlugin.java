@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 by Heiko Schäfer <heiko@rangun.de>
+ * Copyright 2022 by Heiko Schäfer <heiko@rangun.de>
  *
  * This file is part of PinkBull.
  *
@@ -19,24 +19,26 @@
 
 package de.rangun.pinkbull;
 
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.NamespacedKey;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * @author heiko
  *
  */
-final class JoinListener extends PinkBullListener {
+public interface IPinkBullPlugin {
 
-	/**
-	 * @param plugin
-	 */
-	protected JoinListener(PinkBullPlugin plugin) {
-		super(plugin);
-	}
+	NamespacedKey getPinkBullPotionKey();
 
-	@EventHandler
-	public void onJoin(final PlayerJoinEvent event) {
-		plugin.setPlayerFlyAllowed(event.getPlayer(), false, null, false);
-	}
+	ItemStack createPinkBullPotion();
+
+	boolean hasPlayerFlyAllowed(Player player);
+
+	void setPlayerFlyAllowed(final Player player, boolean allow);
+
+	void setPlayerFlyAllowed(final Player player, boolean allow, final Player donor);
+
+	void setPlayerFlyAllowed(final Player player, boolean allow, final Player donor, final boolean flyEndMsg);
+
 }

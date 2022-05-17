@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 by Heiko Schäfer <heiko@rangun.de>
+ * Copyright 2021-2022 by Heiko Schäfer <heiko@rangun.de>
  *
  * This file is part of PinkBull.
  *
@@ -17,7 +17,7 @@
  * along with PinkBull.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.rangun.pinkbull;
+package de.rangun.pinkbull.utils;
 
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
@@ -28,7 +28,7 @@ import org.bukkit.inventory.ItemStack;
  * @author heiko
  *
  */
-final class Glow extends Enchantment {
+public final class Glow extends Enchantment {
 
 	/**
 	 * @param key

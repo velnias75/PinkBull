@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 by Heiko Schäfer <heiko@rangun.de>
+ * Copyright 2021-2022 by Heiko Schäfer <heiko@rangun.de>
  *
  * This file is part of PinkBull.
  *
@@ -50,18 +50,19 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
+import de.rangun.pinkbull.commands.CommandFly;
+import de.rangun.pinkbull.commands.CommandPinkBull;
+import de.rangun.pinkbull.listener.JoinListener;
+import de.rangun.pinkbull.listener.PlayerChangedWorldListener;
+import de.rangun.pinkbull.listener.PlayerItemConsumeListener;
+import de.rangun.pinkbull.utils.Glow;
+import de.rangun.pinkbull.utils.PinkBullRunnable;
+
 /**
  * @author heiko
  *
  */
-//@Plugin(name = "PinkBull", version = "0.0-SNAPSHOT")
-//@Description(value = "PinkBull verleiht Flügel!")
-//@Website(value = "https://github.com/velnias75/PinkBull")
-//@ApiVersion(Target.v1_17)
-//@Author(value = "Velnias75")
-//@Command(name = "fly", desc = "Setzt oder nimmt Spieler in den bzw. aus dem Flugmodus", usage = "/fly [player]", permission = "pinkbull.fly")
-//@Command(name = "pinkbull", desc = "Gibt dem Spieler einen PinkBull-Trank", usage = "/pinkbull", permission = "pinkbull.pinkbull")
-public final class PinkBullPlugin extends JavaPlugin {
+public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin {
 
 	private final static String PINK_BULL_TEXT = ChatColor.LIGHT_PURPLE + "Pink Bull" + ChatColor.RESET;
 
@@ -74,9 +75,6 @@ public final class PinkBullPlugin extends JavaPlugin {
 
 		registerGlow();
 
-		// config.addDefault("fly_ticks", 18000L);
-		// config.options().copyDefaults(true);
-		// saveConfig();
 		saveDefaultConfig();
 
 		sb = Bukkit.getScoreboardManager().getMainScoreboard();
@@ -114,11 +112,13 @@ public final class PinkBullPlugin extends JavaPlugin {
 		}
 	}
 
-	NamespacedKey getPinkBullPotionKey() {
+	@Override
+	public NamespacedKey getPinkBullPotionKey() {
 		return PINK_BULL_POTION_KEY;
 	}
 
-	ItemStack createPinkBullPotion() {
+	@Override
+	public ItemStack createPinkBullPotion() {
 
 		final PotionEffect effect = new PotionEffect(PotionEffectType.LEVITATION, (int) getFlyTicks(), 0);
 		final ItemStack potion = new ItemStack(Material.POTION);
@@ -146,20 +146,24 @@ public final class PinkBullPlugin extends JavaPlugin {
 		return potion;
 	}
 
-	boolean hasPlayerFlyAllowed(final Player player) {
+	@Override
+	public boolean hasPlayerFlyAllowed(final Player player) {
 		return player.getPersistentDataContainer().has(PINK_BULL_POTION_KEY, PersistentDataType.LONG)
 				&& player.getPersistentDataContainer().get(PINK_BULL_POTION_KEY, PersistentDataType.LONG) > 0L;
 	}
 
-	void setPlayerFlyAllowed(final Player player, boolean allow) {
+	@Override
+	public void setPlayerFlyAllowed(final Player player, boolean allow) {
 		setPlayerFlyAllowed(player, allow, null, true);
 	}
 
-	void setPlayerFlyAllowed(final Player player, boolean allow, final Player donor) {
+	@Override
+	public void setPlayerFlyAllowed(final Player player, boolean allow, final Player donor) {
 		setPlayerFlyAllowed(player, allow, donor, true);
 	}
 
-	void setPlayerFlyAllowed(final Player player, boolean allow, final Player donor, final boolean flyEndMsg) {
+	@Override
+	public void setPlayerFlyAllowed(final Player player, boolean allow, final Player donor, final boolean flyEndMsg) {
 
 		final KeyedBossBar bar;
 

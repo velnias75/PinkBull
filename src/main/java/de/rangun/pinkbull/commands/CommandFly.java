@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 by Heiko Schäfer <heiko@rangun.de>
+ * Copyright 2021-2022 by Heiko Schäfer <heiko@rangun.de>
  *
  * This file is part of PinkBull.
  *
@@ -17,7 +17,7 @@
  * along with PinkBull.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.rangun.pinkbull;
+package de.rangun.pinkbull.commands;
 
 import java.util.List;
 
@@ -33,18 +33,20 @@ import org.bukkit.util.StringUtil;
 
 import com.google.common.collect.Lists;
 
+import de.rangun.pinkbull.IPinkBullPlugin;
+
 /**
  * @author heiko
  *
  */
-final class CommandFly implements CommandExecutor, TabCompleter {
+public final class CommandFly implements CommandExecutor, TabCompleter {
 
-	final PinkBullPlugin plugin;
+	final IPinkBullPlugin plugin;
 
 	/**
 	 * 
 	 */
-	public CommandFly(final PinkBullPlugin plugin) {
+	public CommandFly(final IPinkBullPlugin plugin) {
 		this.plugin = plugin;
 	}
 

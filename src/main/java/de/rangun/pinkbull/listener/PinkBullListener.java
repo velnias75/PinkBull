@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 by Heiko Schäfer <heiko@rangun.de>
+ * Copyright 2021-2022 by Heiko Schäfer <heiko@rangun.de>
  *
  * This file is part of PinkBull.
  *
@@ -17,36 +17,21 @@
  * along with PinkBull.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.rangun.pinkbull;
+package de.rangun.pinkbull.listener;
 
-import org.bukkit.World;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.event.Listener;
+
+import de.rangun.pinkbull.IPinkBullPlugin;
 
 /**
  * @author heiko
  *
  */
-final class PlayerChangedWorldListener extends PinkBullListener {
+abstract class PinkBullListener implements Listener {
 
-	/**
-	 * @param plugin
-	 */
-	protected PlayerChangedWorldListener(PinkBullPlugin plugin) {
-		super(plugin);
-	}
+	protected final IPinkBullPlugin plugin;
 
-	@EventHandler
-	public void onPlayerChangedWorld(final PlayerChangedWorldEvent ev) {
-
-		final Player player = ev.getPlayer();
-
-		if (World.Environment.NORMAL.equals(ev.getFrom().getEnvironment())) {
-
-			if (plugin.hasPlayerFlyAllowed(player)) {
-				plugin.setPlayerFlyAllowed(player, false);
-			}
-		}
+	protected PinkBullListener(final IPinkBullPlugin plugin) {
+		this.plugin = plugin;
 	}
 }

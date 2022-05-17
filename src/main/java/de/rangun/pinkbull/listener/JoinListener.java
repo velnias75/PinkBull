@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 by Heiko Schäfer <heiko@rangun.de>
+ * Copyright 2021-2022 by Heiko Schäfer <heiko@rangun.de>
  *
  * This file is part of PinkBull.
  *
@@ -17,22 +17,28 @@
  * along with PinkBull.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package de.rangun.pinkbull;
+package de.rangun.pinkbull.listener;
 
-import org.bukkit.event.Listener;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerJoinEvent;
+
+import de.rangun.pinkbull.IPinkBullPlugin;
 
 /**
  * @author heiko
  *
  */
-abstract class PinkBullListener implements Listener {
-
-	protected final PinkBullPlugin plugin;
+public final class JoinListener extends PinkBullListener {
 
 	/**
-	 * 
+	 * @param plugin
 	 */
-	protected PinkBullListener(final PinkBullPlugin plugin) {
-		this.plugin = plugin;
+	public JoinListener(IPinkBullPlugin plugin) {
+		super(plugin);
+	}
+
+	@EventHandler
+	public void onJoin(final PlayerJoinEvent event) {
+		plugin.setPlayerFlyAllowed(event.getPlayer(), false, null, false);
 	}
 }
