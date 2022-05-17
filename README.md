@@ -1,5 +1,5 @@
 # PinkBull
-PinkBull verleiht Flügel! / PinkBull gives you wings.
+<img src="https://github.com/velnias75/PinkBull/raw/master/icon.svg" height="64px"> **PinkBull verleiht Flügel! / PinkBull gives you wings.**
 
 Tiny plugin to get a temporary fly effect by crafting a potion.
 The duration of the effect is configurable (defaults to 15 minutes).
