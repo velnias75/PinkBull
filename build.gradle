@@ -8,7 +8,7 @@ plugins {
 apply plugin: 'java'
 
 archivesBaseName = 'PinkBull'
-version = '1.0-SNAPSHOT'
+version = '1.0'
 
 repositories {
 	mavenLocal()
@@ -20,11 +20,11 @@ repositories {
 		content {
 			includeGroup 'org.bukkit'
 			includeGroup 'org.spigotmc'
-    	}
+	      }
 	}
 	
 	maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
-  	maven { url = 'https://oss.sonatype.org/content/repositories/central' }
+	maven { url = 'https://oss.sonatype.org/content/repositories/central' }
 	
 	mavenCentral()
 }
@@ -51,7 +51,7 @@ dependencies {
 
 processResources {
     from(sourceSets.main.resources.srcDirs) {
-    	duplicatesStrategy = 'include'
+	duplicatesStrategy = 'include'
         filter ReplaceTokens, tokens: [version: version]
     }
 }
