@@ -25,6 +25,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletionException;
 import java.util.logging.Level;
 
 import org.bstats.bukkit.Metrics;
@@ -61,6 +62,11 @@ import de.rangun.pinkbull.listener.PlayerChangedWorldListener;
 import de.rangun.pinkbull.listener.PlayerItemConsumeListener;
 import de.rangun.pinkbull.utils.Glow;
 import de.rangun.pinkbull.utils.PinkBullRunnable;
+import dev.derklaro.spiget.SpigetClient;
+import dev.derklaro.spiget.http.java11.Java11SpigetClient;
+import dev.derklaro.spiget.mapper.gson.GsonMapper;
+import dev.derklaro.spiget.model.Resource;
+import dev.derklaro.spiget.model.Version;
 
 /**
  * @author heiko
@@ -68,12 +74,16 @@ import de.rangun.pinkbull.utils.PinkBullRunnable;
  */
 public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin {
 
+	private final SpigetClient spigetClient = new Java11SpigetClient(GsonMapper.INSTANCE);
+
 	private final NamespacedKey PINK_BULL_POTION_KEY = new NamespacedKey(this, "pink_bull_potion");
 	private final FileConfiguration config = getConfig();
 	private FileConfiguration messages = null;
 	private Scoreboard sb = null;
 
 	private final static String PINK_BULL_TEXT = ChatColor.LIGHT_PURPLE + "Pink Bull" + ChatColor.RESET;
+
+	private List<String> joinMessages = new ArrayList<>(2);
 
 	@Override
 	public void onEnable() {
@@ -128,6 +138,43 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 
 		final int pluginId = 15208;
 		new Metrics(this, pluginId);
+
+		try {
+
+			final int id = 102050;
+
+			final Version latestVersion = spigetClient.latestResourceVersion().resourceId(id).exec().join();
+			final Resource resourceDetails = spigetClient.resourceDetails().resourceId(id).exec().join();
+			final String currentVersion = getDescription().getVersion();
+
+			if (!currentVersion.endsWith("-SNAPSHOT") && !currentVersion.equals(latestVersion.name())) {
+
+				final String verMsg1 = "A newer version of " + getDescription().getName() + " is available: "
+						+ latestVersion.name();
+				final String verMsg2 = "Download: " + resourceDetails.file().externalUrl();
+
+				getLogger().warning(verMsg1);
+				getLogger().warning(verMsg2);
+
+				joinMessages.add(verMsg1);
+				joinMessages.add(verMsg2);
+
+			} else if (currentVersion.endsWith("-SNAPSHOT")) {
+
+				final String verMsg1 = "You are using a development version.";
+				final String verMsg2 = "Please report any issues here: "
+						+ resourceDetails.links().get("alternativeSupport");
+
+				getLogger().warning(verMsg1);
+				getLogger().warning(verMsg2);
+
+				joinMessages.add(verMsg1);
+				joinMessages.add(verMsg2);
+			}
+
+		} catch (CompletionException e) {
+			getLogger().warning("Couldn't retrieve latest version.");
+		}
 	}
 
 	@Override
@@ -377,5 +424,10 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 		final long seconds = (getFlyTicks() - (minutes * 20L * 60L)) / 20L;
 
 		return String.format("%d%s", minutes, seconds != 0L ? String.format(":%02d", seconds) : "");
+	}
+
+	@Override
+	public List<String> getJoinMessages() {
+		return joinMessages;
 	}
 }

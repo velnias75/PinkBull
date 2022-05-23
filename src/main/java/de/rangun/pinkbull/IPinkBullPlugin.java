@@ -19,9 +19,12 @@
 
 package de.rangun.pinkbull;
 
+import java.util.List;
+
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.PluginDescriptionFile;
 
 /**
  * @author heiko
@@ -48,4 +51,8 @@ public interface IPinkBullPlugin {
 	String getMessage(final String key, final Player player);
 
 	String getMessage(final String key, final Player player, final Player donor);
+
+	List<String> getJoinMessages();
+
+	PluginDescriptionFile getDescription();
 }

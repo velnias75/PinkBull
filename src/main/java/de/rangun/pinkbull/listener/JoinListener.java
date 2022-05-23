@@ -19,6 +19,7 @@
 
 package de.rangun.pinkbull.listener;
 
+import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
 
@@ -39,6 +40,15 @@ public final class JoinListener extends PinkBullListener {
 
 	@EventHandler
 	public void onJoin(final PlayerJoinEvent event) {
+
 		plugin.setPlayerFlyAllowed(event.getPlayer(), false, null, false);
+
+		if (event.getPlayer().isOp()) {
+
+			for (String jm : plugin.getJoinMessages()) {
+				event.getPlayer().sendMessage("" + ChatColor.YELLOW + ChatColor.ITALIC + "["
+						+ plugin.getDescription().getName() + ": " + jm + "]");
+			}
+		}
 	}
 }
