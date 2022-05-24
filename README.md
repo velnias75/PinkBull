@@ -19,6 +19,10 @@ Languages English or German.
 * `/pinkbull [<player>]` gives you or `player` a **free** PinkBull *(permission: pinkbull.pinkbull)*
 * `/fly [<player>]` enables you or `player` to just **fly** unlimited *(permission: pinkbull.fly)*
 
+### Building
+After *checkout/clone* do
+`git submodule update --init --recursive` once, than `./gradlew clean build`.
+
 ---
 
 ![](https://bstats.org/signatures/bukkit/PinkBull.svg)
