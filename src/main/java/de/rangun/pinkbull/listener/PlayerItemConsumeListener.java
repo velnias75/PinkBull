@@ -26,6 +26,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.PotionMeta;
 
 import de.rangun.pinkbull.IPinkBullPlugin;
 
@@ -49,7 +50,8 @@ public final class PlayerItemConsumeListener extends PinkBullListener {
 
 		if (item.getItemMeta().getPersistentDataContainer().getKeys().contains(plugin.getPinkBullPotionKey())) {
 
-			Player player = ev.getPlayer();
+			final Player player = ev.getPlayer();
+			final long duration = ((PotionMeta) item.getItemMeta()).getCustomEffects().get(0).getDuration();
 
 			if (GameMode.CREATIVE.equals(player.getGameMode())) {
 				return;
@@ -60,7 +62,7 @@ public final class PlayerItemConsumeListener extends PinkBullListener {
 
 			if (!plugin.hasPlayerFlyAllowed(player)) {
 
-				plugin.setPlayerFlyAllowed(player, true);
+				plugin.setPlayerFlyAllowed(player, true, duration);
 
 			} else {
 

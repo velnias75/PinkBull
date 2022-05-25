@@ -41,7 +41,7 @@ public final class JoinListener extends PinkBullListener {
 	@EventHandler
 	public void onJoin(final PlayerJoinEvent event) {
 
-		plugin.setPlayerFlyAllowed(event.getPlayer(), false, null, false);
+		plugin.setPlayerFlyAllowed(event.getPlayer(), false, null, false, -1);
 
 		if (event.getPlayer().isOp()) {
 

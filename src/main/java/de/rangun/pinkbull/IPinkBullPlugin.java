@@ -36,19 +36,28 @@ public interface IPinkBullPlugin {
 
 	ItemStack createPinkBullPotion();
 
+	ItemStack createPinkBullPotion(final int duration);
+
 	boolean hasPlayerFlyAllowed(Player player);
 
-	void setPlayerFlyAllowed(final Player player, boolean allow);
+	void setPlayerFlyAllowed(final Player player, final boolean allow);
 
-	void setPlayerFlyAllowed(final Player player, boolean allow, final Player donor);
+	void setPlayerFlyAllowed(final Player player, final boolean allow, final long duration);
 
-	void setPlayerFlyAllowed(final Player player, boolean allow, final Player donor, final boolean flyEndMsg);
+	void setPlayerFlyAllowed(final Player player, final boolean allow, final Player donor);
+
+	void setPlayerFlyAllowed(final Player player, final boolean allow, final Player donor, final boolean flyEndMsg,
+			long duration);
 
 	String getMessage(final String key);
+
+	String getMessage(final String key, final String string, final boolean isString);
 
 	String getMessage(final String key, final String player);
 
 	String getMessage(final String key, final Player player);
+
+	String getMessage(final String key, final Player player, final long duration);
 
 	String getMessage(final String key, final Player player, final Player donor);
 

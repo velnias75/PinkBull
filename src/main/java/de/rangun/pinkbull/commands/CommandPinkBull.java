@@ -23,6 +23,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import de.rangun.pinkbull.IPinkBullPlugin;
 
@@ -34,9 +35,6 @@ public final class CommandPinkBull implements CommandExecutor {
 
 	final IPinkBullPlugin plugin;
 
-	/**
-	 * 
-	 */
 	public CommandPinkBull(final IPinkBullPlugin plugin) {
 		this.plugin = plugin;
 	}
@@ -46,8 +44,33 @@ public final class CommandPinkBull implements CommandExecutor {
 
 		if (sender instanceof Player) {
 
+			ItemStack is;
+
+			if (args.length > 0) {
+
+				try {
+
+					final int duration = Math.min(Integer.parseInt(args[0]), Integer.MAX_VALUE / 20) * 20;
+
+					if (duration < 20) {
+						sender.sendMessage(plugin.getMessage("PinkBull_wrong_duration"));
+						is = plugin.createPinkBullPotion();
+					} else {
+						is = plugin.createPinkBullPotion(duration);
+					}
+
+				} catch (NumberFormatException e) {
+					is = plugin.createPinkBullPotion();
+					sender.sendMessage(plugin.getMessage("PinkBull_invalid_integer", args[0], true));
+				}
+
+			} else {
+				is = plugin.createPinkBullPotion();
+			}
+
 			final Player player = (Player) sender;
-			player.getInventory().addItem(plugin.createPinkBullPotion());
+
+			player.getInventory().addItem(is);
 
 		} else {
 			sender.sendMessage(plugin.getMessage("PinkBull_only_player_exec_pinkbull"));

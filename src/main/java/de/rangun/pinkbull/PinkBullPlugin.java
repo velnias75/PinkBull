@@ -152,13 +152,18 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 
 	@Override
 	public ItemStack createPinkBullPotion() {
+		return createPinkBullPotion((int) getFlyTicks());
+	}
 
-		final PotionEffect effect = new PotionEffect(PotionEffectType.LEVITATION, (int) getFlyTicks(), 0);
+	@Override
+	public ItemStack createPinkBullPotion(final int duration) {
+
+		final PotionEffect effect = new PotionEffect(PotionEffectType.LEVITATION, duration, 0);
 		final ItemStack potion = new ItemStack(Material.POTION);
 		final PotionMeta meta = (PotionMeta) potion.getItemMeta();
 		final Glow glow = new Glow(new NamespacedKey(this, getDescription().getName()));
 		final List<String> lore = ImmutableList.of(getMessage("PinkBull_slogan"), "",
-				getMessage("PinkBull_lore_duration_line_1"), getMessage("PinkBull_lore_duration_line_2"), "");
+				getMessage("PinkBull_lore_duration_line_1"), getMessage("PinkBull_lore_duration_line_2", duration), "");
 
 		meta.setLore(lore);
 		meta.setColor(Color.RED);
@@ -180,17 +185,23 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 	}
 
 	@Override
-	public void setPlayerFlyAllowed(final Player player, boolean allow) {
-		setPlayerFlyAllowed(player, allow, null, true);
+	public void setPlayerFlyAllowed(final Player player, final boolean allow) {
+		setPlayerFlyAllowed(player, allow, null, true, -1L);
 	}
 
 	@Override
-	public void setPlayerFlyAllowed(final Player player, boolean allow, final Player donor) {
-		setPlayerFlyAllowed(player, allow, donor, true);
+	public void setPlayerFlyAllowed(final Player player, final boolean allow, final long duration) {
+		setPlayerFlyAllowed(player, allow, null, true, duration);
 	}
 
 	@Override
-	public void setPlayerFlyAllowed(final Player player, boolean allow, final Player donor, final boolean flyEndMsg) {
+	public void setPlayerFlyAllowed(final Player player, final boolean allow, final Player donor) {
+		setPlayerFlyAllowed(player, allow, donor, true, -1L);
+	}
+
+	@Override
+	public void setPlayerFlyAllowed(final Player player, final boolean allow, final Player donor,
+			final boolean flyEndMsg, long duration) {
 
 		final KeyedBossBar bar;
 
@@ -222,7 +233,9 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 						final Long cur = player.getPersistentDataContainer().get(PINK_BULL_POTION_KEY,
 								PersistentDataType.LONG);
 
-						final double val = (double) (cur - 20L) / ((double) getFlyTicks());
+						final double val = (double) (cur - 20L)
+								/ ((double) (duration == -1L ? getFlyTicks() : duration));
+
 						bar.setProgress(val >= 0.0d ? val : 0.0d);
 
 						player.getPersistentDataContainer().set(PINK_BULL_POTION_KEY, PersistentDataType.LONG,
@@ -249,7 +262,7 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 
 				}.runTaskTimer(this, 20L, 20L);
 
-				getServer().broadcastMessage(getMessage("Pinkbull_quaffed", player));
+				getServer().broadcastMessage(getMessage("Pinkbull_quaffed", player, duration));
 
 			} else {
 
@@ -268,7 +281,7 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 
 		player.setAllowFlight(allow);
 		player.getPersistentDataContainer().set(PINK_BULL_POTION_KEY, PersistentDataType.LONG,
-				allow ? (donor == null ? getFlyTicks() : -1L) : 0L);
+				allow ? (donor == null ? (duration == -1L ? getFlyTicks() : duration) : -1L) : 0L);
 	}
 
 	private void flyEndMessage(final Player player) {
@@ -327,27 +340,43 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 
 	@Override
 	public String getMessage(final String key) {
-		return getMessage(key, null, null, null);
+		return getMessage(key, null, null, null, -1L, null);
+	}
+
+	@Override
+	public String getMessage(final String key, final String string, final boolean isString) {
+		return getMessage(key, null, null, null, -1L, string);
+	}
+
+	private String getMessage(final String key, final long duration) {
+		return getMessage(key, null, null, null, duration, null);
 	}
 
 	@Override
 	public String getMessage(final String key, final String player) {
-		return getMessage(key, null, null, player);
+		return getMessage(key, null, null, player, -1L, null);
 	}
 
 	@Override
 	public String getMessage(final String key, final Player player) {
-		return getMessage(key, player, null, null);
+		return getMessage(key, player, null, null, -1L, null);
+	}
+
+	@Override
+	public String getMessage(final String key, final Player player, final long duration) {
+		return getMessage(key, player, null, null, duration, null);
 	}
 
 	@Override
 	public String getMessage(final String key, final Player player, final Player donor) {
-		return getMessage(key, player, donor, null);
+		return getMessage(key, player, donor, null, -1L, null);
 	}
 
-	private String getMessage(final String key, final Player player, final Player donor, final String player_s) {
+	private String getMessage(final String key, final Player player, final Player donor, final String player_s,
+			long duration, final String string) {
 		return (messages.getString(key) + ChatColor.RESET).replace("\\n", "\n").replace("{PinkBull}", PINK_BULL_TEXT)
-				.replace("{fly_ticks}", flyTicksToMinutes())
+				.replace("{fly_ticks}", flyTicksToMinutes(duration))
+				.replace("{string}", string == null ? "<null>" : string)
 				.replace("{player}",
 						player == null ? (player_s == null ? "<null>" : player_s)
 								: getTeamFormattedPlayerDisplayName(player))
@@ -373,10 +402,10 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 		return Math.max(800L, config.getLong("fly_ticks"));
 	}
 
-	private String flyTicksToMinutes() {
+	private String flyTicksToMinutes(final long duration) {
 
-		final long minutes = getFlyTicks() / (20L * 60L);
-		final long seconds = (getFlyTicks() - (minutes * 20L * 60L)) / 20L;
+		final long minutes = (duration == -1L ? getFlyTicks() : duration) / (20L * 60L);
+		final long seconds = ((duration == -1L ? getFlyTicks() : duration) - (minutes * 20L * 60L)) / 20L;
 
 		return String.format("%d%s", minutes, seconds != 0L ? String.format(":%02d", seconds) : "");
 	}
