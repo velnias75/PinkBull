@@ -23,7 +23,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -53,6 +52,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
+
+import com.google.common.collect.ImmutableList;
 
 import de.rangun.pinkbull.commands.CommandFly;
 import de.rangun.pinkbull.commands.CommandPinkBull;
@@ -156,13 +157,8 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 		final ItemStack potion = new ItemStack(Material.POTION);
 		final PotionMeta meta = (PotionMeta) potion.getItemMeta();
 		final Glow glow = new Glow(new NamespacedKey(this, getDescription().getName()));
-		final List<String> lore = new ArrayList<>();
-
-		lore.add(getMessage("PinkBull_slogan"));
-		lore.add("");
-		lore.add(getMessage("PinkBull_lore_duration_line_1"));
-		lore.add(getMessage("PinkBull_lore_duration_line_2"));
-		lore.add("");
+		final List<String> lore = ImmutableList.of(getMessage("PinkBull_slogan"), "",
+				getMessage("PinkBull_lore_duration_line_1"), getMessage("PinkBull_lore_duration_line_2"), "");
 
 		meta.setLore(lore);
 		meta.setColor(Color.RED);
