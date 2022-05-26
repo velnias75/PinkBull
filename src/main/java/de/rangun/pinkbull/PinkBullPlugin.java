@@ -159,7 +159,7 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 	@Override
 	public ItemStack createPinkBullPotion(final int duration) {
 
-		final PotionEffect effect = new PotionEffect(PotionEffectType.LEVITATION, duration, 0);
+		final PotionEffect effect = new PotionEffect(PotionEffectType.LEVITATION, duration, 0, false, false, false);
 		final ItemStack potion = new ItemStack(Material.POTION);
 		final PotionMeta meta = (PotionMeta) potion.getItemMeta();
 		final Glow glow = new Glow(new NamespacedKey(this, getDescription().getName()));
@@ -167,7 +167,7 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 				getMessage("PinkBull_lore_duration_line_1"), getMessage("PinkBull_lore_duration_line_2", duration), "");
 
 		meta.setLore(lore);
-		meta.setColor(Color.RED);
+		meta.setColor(Color.fromRGB(255, 192, 203));
 		meta.addEnchant(glow, 1, true);
 		meta.setDisplayName(PINK_BULL_TEXT);
 		meta.addCustomEffect(effect, true);
