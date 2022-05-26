@@ -6,11 +6,11 @@ author: Velnias75
 website: https://www.spigotmc.org/resources/pinkbull.102050/
 commands:
   fly:
-    description: Setzt oder nimmt Spieler in den bzw. aus dem Flugmodus
+    description: enables the player to just fly unlimited.
     permission: pinkbull.fly
-    usage: /fly [player]
+    usage: /fly [<player>]
   pinkbull:
-    description: Gibt dem Spieler einen PinkBull-Trank
+    description: gives the player a free PinkBull with optional duration in seconds.
     permission: pinkbull.pinkbull
-    usage: /pinkbull
+    usage: /pinkbull [<duration>]
 api-version: '1.17'

@@ -50,7 +50,8 @@ public final class CommandFly implements CommandExecutor, TabCompleter {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+	public boolean onCommand(final CommandSender sender, final Command command, final String label,
+			final String[] args) {
 
 		if (sender instanceof Player) {
 
@@ -82,7 +83,8 @@ public final class CommandFly implements CommandExecutor, TabCompleter {
 	}
 
 	@Override
-	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+	public List<String> onTabComplete(final CommandSender sender, final Command command, final String alias,
+			final String[] args) {
 
 		List<String> proposals = Lists.newArrayList();
 
@@ -98,5 +100,4 @@ public final class CommandFly implements CommandExecutor, TabCompleter {
 
 		return proposals;
 	}
-
 }

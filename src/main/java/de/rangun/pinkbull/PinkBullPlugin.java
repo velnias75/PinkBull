@@ -130,6 +130,7 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 		getCommand("fly").setTabCompleter(fly);
 
 		getCommand("pinkbull").setExecutor(pb);
+		getCommand("pinkbull").setTabCompleter(pb);
 
 		final int pluginId = 15208;
 		new Metrics(this, pluginId);

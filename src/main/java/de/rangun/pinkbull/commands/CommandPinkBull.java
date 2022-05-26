@@ -19,11 +19,16 @@
 
 package de.rangun.pinkbull.commands;
 
+import java.util.List;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import com.google.common.collect.ImmutableList;
 
 import de.rangun.pinkbull.IPinkBullPlugin;
 
@@ -31,7 +36,7 @@ import de.rangun.pinkbull.IPinkBullPlugin;
  * @author heiko
  *
  */
-public final class CommandPinkBull implements CommandExecutor {
+public final class CommandPinkBull implements CommandExecutor, TabCompleter {
 
 	final IPinkBullPlugin plugin;
 
@@ -40,7 +45,8 @@ public final class CommandPinkBull implements CommandExecutor {
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+	public boolean onCommand(final CommandSender sender, final Command command, final String label,
+			final String[] args) {
 
 		if (sender instanceof Player) {
 
@@ -79,4 +85,9 @@ public final class CommandPinkBull implements CommandExecutor {
 		return true;
 	}
 
+	@Override
+	public List<String> onTabComplete(final CommandSender sender, final Command command, final String label,
+			final String[] args) {
+		return ImmutableList.of();
+	}
 }

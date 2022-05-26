@@ -16,7 +16,7 @@ Languages English or German.
 * 3 Magma cream
 
 ## Commands
-* `/pinkbull [<player>]` gives you or `player` a **free** PinkBull *(permission: pinkbull.pinkbull)*
+* `/pinkbull [<duration>]` gives you a **free** PinkBull with *optional duration in seconds* *(permission: pinkbull.pinkbull)*
 * `/fly [<player>]` enables you or `player` to just **fly** unlimited *(permission: pinkbull.fly)*
 
 ### Building
