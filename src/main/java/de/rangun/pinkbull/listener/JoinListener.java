@@ -24,6 +24,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import de.rangun.pinkbull.IPinkBullPlugin;
+import de.rangun.spiget.MessageRetriever;
 
 /**
  * @author heiko
@@ -31,11 +32,14 @@ import de.rangun.pinkbull.IPinkBullPlugin;
  */
 public final class JoinListener extends PinkBullListener {
 
+	private final MessageRetriever msgs;
+
 	/**
 	 * @param plugin
 	 */
-	public JoinListener(IPinkBullPlugin plugin) {
+	public JoinListener(IPinkBullPlugin plugin, final MessageRetriever msgs) {
 		super(plugin);
+		this.msgs = msgs;
 	}
 
 	@EventHandler
@@ -45,7 +49,7 @@ public final class JoinListener extends PinkBullListener {
 
 		if (event.getPlayer().isOp()) {
 
-			for (String jm : plugin.getJoinMessages()) {
+			for (String jm : msgs.getJoinMessages()) {
 				event.getPlayer().sendMessage("" + ChatColor.YELLOW + ChatColor.ITALIC + "["
 						+ plugin.getDescription().getName() + ": " + jm + "]");
 			}

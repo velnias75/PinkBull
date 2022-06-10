@@ -50,6 +50,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -119,7 +120,7 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 
 		Bukkit.addRecipe(recipe);
 
-		getServer().getPluginManager().registerEvents(new JoinListener(this), this);
+		getServer().getPluginManager().registerEvents(new JoinListener(this, spigetClient), this);
 		getServer().getPluginManager().registerEvents(new PlayerItemConsumeListener(this), this);
 		getServer().getPluginManager().registerEvents(new PlayerChangedWorldListener(this), this);
 
@@ -135,7 +136,14 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 		final int pluginId = 15208;
 		new Metrics(this, pluginId);
 
-		spigetClient.checkVersion();
+		new BukkitRunnable() {
+
+			@Override
+			public void run() {
+				spigetClient.checkVersion();
+			}
+
+		}.runTaskAsynchronously(this);
 	}
 
 	@Override
@@ -409,10 +417,5 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 		final long seconds = ((duration == -1L ? getFlyTicks() : duration) - (minutes * 20L * 60L)) / 20L;
 
 		return String.format("%d%s", minutes, seconds != 0L ? String.format(":%02d", seconds) : "");
-	}
-
-	@Override
-	public List<String> getJoinMessages() {
-		return spigetClient.getJoinMessages();
 	}
 }
