@@ -1,4 +1,4 @@
-# PinkBull
+# PinkBull ![Spiget Version](https://img.shields.io/spiget/version/102050?label=Latest%20version)
 <img src="https://github.com/velnias75/PinkBull/raw/master/icon.svg" height="64px"> **PinkBull verleiht Flügel! / PinkBull gives you wings.**
 
 Tiny plugin to get a temporary fly effect by crafting a potion.
