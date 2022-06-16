@@ -19,12 +19,12 @@
 
 package de.rangun.pinkbull.listener;
 
-import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import de.rangun.pinkbull.IPinkBullPlugin;
 import de.rangun.spiget.MessageRetriever;
+import net.md_5.bungee.api.ChatColor;
 
 /**
  * @author heiko
@@ -49,10 +49,9 @@ public final class JoinListener extends PinkBullListener {
 
 		if (event.getPlayer().isOp()) {
 
-			for (String jm : msgs.getJoinMessages()) {
-				event.getPlayer().sendMessage("" + ChatColor.YELLOW + ChatColor.ITALIC + "["
-						+ plugin.getDescription().getName() + ": " + jm + "]");
-			}
+			msgs.sendJoinComponents((msg) -> {
+				event.getPlayer().spigot().sendMessage(msg);
+			}, ChatColor.YELLOW);
 		}
 	}
 }
