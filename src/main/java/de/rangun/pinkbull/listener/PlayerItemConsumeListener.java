@@ -53,7 +53,8 @@ public final class PlayerItemConsumeListener extends PinkBullListener {
 			final Player player = ev.getPlayer();
 			final long duration = ((PotionMeta) item.getItemMeta()).getCustomEffects().get(0).getDuration();
 
-			if (GameMode.CREATIVE.equals(player.getGameMode())) {
+			if (GameMode.CREATIVE.equals(player.getGameMode()) || GameMode.SPECTATOR.equals(player.getGameMode())) {
+				ev.setCancelled(true);
 				return;
 			}
 
@@ -68,7 +69,6 @@ public final class PlayerItemConsumeListener extends PinkBullListener {
 
 				player.sendMessage(plugin.getMessage("PinkBull_double_quaff"));
 				plugin.setPlayerFlyAllowed(player, false);
-
 			}
 		}
 	}
