@@ -22,9 +22,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
 import java.util.List;
-import java.util.logging.Level;
 
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -41,8 +39,9 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.KeyedBossBar;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.enchantments.Enchantment;
+import org.bukkit.enchantments.EnchantmentWrapper;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -61,7 +60,6 @@ import de.rangun.pinkbull.commands.CommandPinkBull;
 import de.rangun.pinkbull.listener.JoinListener;
 import de.rangun.pinkbull.listener.PlayerChangedWorldListener;
 import de.rangun.pinkbull.listener.PlayerItemConsumeListener;
-import de.rangun.pinkbull.utils.Glow;
 import de.rangun.pinkbull.utils.PinkBullRunnable;
 import de.rangun.spiget.PluginClient;
 
@@ -83,8 +81,6 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 
 	@Override
 	public void onEnable() {
-
-		registerGlow();
 
 		Reader messageStream = null;
 
@@ -170,13 +166,13 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 		final PotionEffect effect = new PotionEffect(PotionEffectType.LEVITATION, duration, 0, false, false, false);
 		final ItemStack potion = new ItemStack(Material.POTION);
 		final PotionMeta meta = (PotionMeta) potion.getItemMeta();
-		final Glow glow = new Glow(new NamespacedKey(this, getDescription().getName()));
 		final List<String> lore = ImmutableList.of(getMessage("PinkBull_slogan"), "",
 				getMessage("PinkBull_lore_duration_line_1"), getMessage("PinkBull_lore_duration_line_2", duration), "");
 
 		meta.setLore(lore);
 		meta.setColor(Color.fromRGB(255, 192, 203));
-		meta.addEnchant(glow, 1, true);
+		meta.addEnchant(new EnchantmentWrapper("pinkbull"), 1, true);
+		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		meta.setDisplayName(PINK_BULL_TEXT);
 		meta.addCustomEffect(effect, true);
 		meta.setCustomModelData(config.getInt("custom_model_data", 1));
@@ -320,32 +316,6 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 
 	private NamespacedKey createPlayerBossbarKey(final Player player) {
 		return new NamespacedKey(this, "pink_bull_bossbar_" + player.getUniqueId().toString());
-	}
-
-	private void registerGlow() {
-
-		try {
-
-			final Field f = Enchantment.class.getDeclaredField("acceptingNew");
-
-			f.setAccessible(true);
-			f.set(null, true);
-
-		} catch (Exception e) {
-			Bukkit.getLogger().log(Level.WARNING, "Exception in registering Glow", e);
-		}
-
-		try {
-
-			final NamespacedKey key = new NamespacedKey(this, getDescription().getName());
-			final Glow glow = new Glow(key);
-
-			Enchantment.registerEnchantment(glow);
-
-		} catch (IllegalArgumentException e) {
-		} catch (Exception e) {
-			Bukkit.getLogger().log(Level.WARNING, "Exception in registering Glow", e);
-		}
 	}
 
 	@Override
