@@ -179,6 +179,7 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 		meta.addEnchant(glow, 1, true);
 		meta.setDisplayName(PINK_BULL_TEXT);
 		meta.addCustomEffect(effect, true);
+		meta.setCustomModelData(config.getInt("custom_model_data", 1));
 
 		meta.getPersistentDataContainer().set(PINK_BULL_POTION_KEY, PersistentDataType.BYTE, (byte) 1);
 

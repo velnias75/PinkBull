@@ -5,3 +5,6 @@ language: en
 
 # How long the PinkBull-effect should endure (in ticks)
 fly_ticks: 18000
+
+# If your resource pack uses another index for a "minecraft:potion" custom model, change it here
+custom_model_data: 1
