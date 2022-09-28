@@ -39,6 +39,7 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.KeyedBossBar;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.enchantments.EnchantmentWrapper;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -72,6 +73,7 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 	private final PluginClient spigetClient = new PluginClient(102050, getDescription().getVersion(),
 			getDescription().getName(), getLogger());
 
+	private final Enchantment PINKBULL_ENCHANTMENT = new EnchantmentWrapper("pinkbull");
 	private final NamespacedKey PINK_BULL_POTION_KEY = new NamespacedKey(this, "pink_bull_potion");
 	private final FileConfiguration config = getConfig();
 	private FileConfiguration messages = null;
@@ -171,7 +173,7 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 
 		meta.setLore(lore);
 		meta.setColor(Color.fromRGB(255, 192, 203));
-		meta.addEnchant(new EnchantmentWrapper("pinkbull"), 1, true);
+		meta.addEnchant(PINKBULL_ENCHANTMENT, 1, true);
 		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		meta.setDisplayName(PINK_BULL_TEXT);
 		meta.addCustomEffect(effect, true);
