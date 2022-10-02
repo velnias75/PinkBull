@@ -19,7 +19,10 @@ Languages English or German.
 * `/pinkbull [<duration>]` gives you a **free** PinkBull with *optional duration in seconds* *(permission: pinkbull.pinkbull)*
 * `/fly [<player>]` enables you or `player` to just **fly** unlimited *(permission: pinkbull.fly)*
 
-### Building
+## Custom Model
+There is a custom model resourcepack available to let the *potion* look loke that in the picture above: https://github.com/velnias75/PinkBull-Model
+
+## Building
 After *checkout/clone* do
 `git submodule update --init --recursive` once, than `./gradlew clean build`.
 
