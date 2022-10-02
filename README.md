@@ -9,7 +9,7 @@ Languages English or German.
 **Minecraft version `1.17+`**
 
 ## Recipe
-![Screenshot_20220517_125952](https://user-images.githubusercontent.com/4481414/168797514-3df530dc-9ebb-4831-bab7-97b0120094da.png)
+![Screenshot_20221002_082640](https://user-images.githubusercontent.com/4481414/193441624-c203fc41-0066-454d-b07d-bccac3016613.png)
 
 * 5 Sugar
 * 1 Water bucket (you'll get back an empty bucket)
