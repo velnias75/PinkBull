@@ -8,7 +8,7 @@ plugins {
 apply plugin: 'java'
 
 archivesBaseName = 'PinkBull'
-version = '1.4-SNAPSHOT'
+version = '1.4'
 
 repositories {
 	mavenLocal()
