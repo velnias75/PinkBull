@@ -60,4 +60,6 @@ public interface IPinkBullPlugin {
 	String getMessage(final String key, final Player player, final Player donor);
 
 	PluginDescriptionFile getDescription();
+
+	void reloadConfig();
 }

@@ -48,38 +48,46 @@ public final class CommandPinkBull implements CommandExecutor, TabCompleter {
 	public boolean onCommand(final CommandSender sender, final Command command, final String label,
 			final String[] args) {
 
-		if (sender instanceof Player) {
+		if (args.length > 0 && "reload".equalsIgnoreCase(args[0]) && sender.hasPermission("pinkbull.reload")) {
 
-			ItemStack is;
-
-			if (args.length > 0) {
-
-				try {
-
-					final int duration = Math.min(Integer.parseInt(args[0]), Integer.MAX_VALUE / 20) * 20;
-
-					if (duration < 20) {
-						sender.sendMessage(plugin.getMessage("PinkBull_wrong_duration"));
-						is = plugin.createPinkBullPotion();
-					} else {
-						is = plugin.createPinkBullPotion(duration);
-					}
-
-				} catch (NumberFormatException e) {
-					is = plugin.createPinkBullPotion();
-					sender.sendMessage(plugin.getMessage("PinkBull_invalid_integer", args[0], true));
-				}
-
-			} else {
-				is = plugin.createPinkBullPotion();
-			}
-
-			final Player player = (Player) sender;
-
-			player.getInventory().addItem(is);
+			plugin.reloadConfig();
+			sender.sendMessage(plugin.getMessage("PinkBull_reloaded"));
 
 		} else {
-			sender.sendMessage(plugin.getMessage("PinkBull_only_player_exec_pinkbull"));
+
+			if (sender instanceof Player) {
+
+				ItemStack is;
+
+				if (args.length > 0) {
+
+					try {
+
+						final int duration = Math.min(Integer.parseInt(args[0]), Integer.MAX_VALUE / 20) * 20;
+
+						if (duration < 20) {
+							sender.sendMessage(plugin.getMessage("PinkBull_wrong_duration"));
+							is = plugin.createPinkBullPotion();
+						} else {
+							is = plugin.createPinkBullPotion(duration);
+						}
+
+					} catch (NumberFormatException e) {
+						is = plugin.createPinkBullPotion();
+						sender.sendMessage(plugin.getMessage("PinkBull_invalid_integer", args[0], true));
+					}
+
+				} else {
+					is = plugin.createPinkBullPotion();
+				}
+
+				final Player player = (Player) sender;
+
+				player.getInventory().addItem(is);
+
+			} else {
+				sender.sendMessage(plugin.getMessage("PinkBull_only_player_exec_pinkbull"));
+			}
 		}
 
 		return true;
@@ -88,6 +96,6 @@ public final class CommandPinkBull implements CommandExecutor, TabCompleter {
 	@Override
 	public List<String> onTabComplete(final CommandSender sender, final Command command, final String label,
 			final String[] args) {
-		return ImmutableList.of();
+		return args.length == 1 ? ImmutableList.of("reload") : ImmutableList.of();
 	}
 }

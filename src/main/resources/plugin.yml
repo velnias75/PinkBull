@@ -13,4 +13,8 @@ commands:
     description: gives the player a free PinkBull with optional duration in seconds.
     permission: pinkbull.pinkbull
     usage: /pinkbull [<duration>]
+permissions:
+    pinkbull.reload:
+        description: allow the reload of the config
+        default: op
 api-version: '1.17'

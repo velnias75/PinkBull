@@ -13,3 +13,4 @@ PinkBull_only_player_exec_fly: '§e§l/fly §r§ekann nur von einem Spieler ausg
 PinkBull_only_player_exec_pinkbull: '§e§l/pinkbull §r§ekann nur von einem Spieler ausgeführt werden.'
 PinkBull_wrong_duration: '§cEffektlänge muss eine oder mehr Sekunden betragen.'
 PinkBull_invalid_integer: '§c"{string}" ist keine gültige Ganzzahl.'
+PinkBull_reloaded: 'Die Konfiguration wurde neu eingelesen.'

@@ -75,7 +75,7 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 
 	private final Enchantment PINKBULL_ENCHANTMENT = new EnchantmentWrapper("pinkbull");
 	private final NamespacedKey PINK_BULL_POTION_KEY = new NamespacedKey(this, "pink_bull_potion");
-	private final FileConfiguration config = getConfig();
+	private FileConfiguration config = getConfig();
 	private FileConfiguration messages = null;
 	private Scoreboard sb = null;
 
@@ -84,27 +84,30 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 	@Override
 	public void onEnable() {
 
+		/*-
 		Reader messageStream = null;
-
+		
 		try {
-
+		
 			InputStream is = this.getResource("messages_" + config.getString("language", "en") + ".yml");
-
+		
 			if (is == null) {
 				is = this.getResource("messages_en.yml");
 				Bukkit.getLogger().warning("[" + getName() + "] Language \"" + config.getString("language")
 						+ "\" not supported, falling back to \"en\".");
 			}
-
+		
 			messageStream = new InputStreamReader(is, "UTF8");
-
+		
 		} catch (UnsupportedEncodingException e) {
 		}
-
+		
 		if (messageStream != null) {
 			messages = YamlConfiguration.loadConfiguration(messageStream);
 		}
+		*/
 
+		loadMessages();
 		saveDefaultConfig();
 
 		sb = Bukkit.getScoreboardManager().getMainScoreboard();
@@ -390,5 +393,36 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 		final long seconds = ((duration == -1L ? getFlyTicks() : duration) - (minutes * 20L * 60L)) / 20L;
 
 		return String.format("%d%s", minutes, seconds != 0L ? String.format(":%02d", seconds) : "");
+	}
+
+	@Override
+	public void reloadConfig() {
+		super.reloadConfig();
+		config = getConfig();
+		loadMessages();
+	}
+
+	private void loadMessages() {
+
+		Reader messageStream = null;
+
+		try {
+
+			InputStream is = this.getResource("messages_" + config.getString("language", "en") + ".yml");
+
+			if (is == null) {
+				is = this.getResource("messages_en.yml");
+				Bukkit.getLogger().warning("[" + getName() + "] Language \"" + config.getString("language")
+						+ "\" not supported, falling back to \"en\".");
+			}
+
+			messageStream = new InputStreamReader(is, "UTF8");
+
+		} catch (UnsupportedEncodingException e) {
+		}
+
+		if (messageStream != null) {
+			messages = YamlConfiguration.loadConfiguration(messageStream);
+		}
 	}
 }
