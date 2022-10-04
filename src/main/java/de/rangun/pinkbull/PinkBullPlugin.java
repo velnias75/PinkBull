@@ -18,11 +18,14 @@
 
 package de.rangun.pinkbull;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -84,31 +87,9 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 	@Override
 	public void onEnable() {
 
-		/*-
-		Reader messageStream = null;
-		
-		try {
-		
-			InputStream is = this.getResource("messages_" + config.getString("language", "en") + ".yml");
-		
-			if (is == null) {
-				is = this.getResource("messages_en.yml");
-				Bukkit.getLogger().warning("[" + getName() + "] Language \"" + config.getString("language")
-						+ "\" not supported, falling back to \"en\".");
-			}
-		
-			messageStream = new InputStreamReader(is, "UTF8");
-		
-		} catch (UnsupportedEncodingException e) {
-		}
-		
-		if (messageStream != null) {
-			messages = YamlConfiguration.loadConfiguration(messageStream);
-		}
-		*/
-
 		loadMessages();
 		saveDefaultConfig();
+		updateConfig();
 
 		sb = Bukkit.getScoreboardManager().getMainScoreboard();
 
@@ -400,6 +381,33 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 		super.reloadConfig();
 		config = getConfig();
 		loadMessages();
+	}
+
+	private void updateConfig() {
+
+		try {
+
+			final FileConfiguration jarConf = YamlConfiguration.loadConfiguration(this.getTextResource("config.yml"));
+
+			boolean changed = false;
+
+			for (final String key : jarConf.getKeys(true)) {
+
+				if (!config.contains(key, true)) {
+					config.set(key, jarConf.get(key));
+					changed = true;
+				}
+			}
+
+			if (changed) {
+				config.save(new File(getDataFolder() + "/config.yml"));
+				Bukkit.getLogger().warning("[" + getName()
+						+ "] Configuration updated. Please read the documention for information on the new options.");
+			}
+
+		} catch (IllegalArgumentException | IOException e) {
+			getLogger().log(Level.WARNING, "Could not update config", e);
+		}
 	}
 
 	private void loadMessages() {
