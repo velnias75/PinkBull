@@ -66,6 +66,7 @@ import de.rangun.pinkbull.listener.PlayerChangedWorldListener;
 import de.rangun.pinkbull.listener.PlayerItemConsumeListener;
 import de.rangun.pinkbull.utils.PinkBullRunnable;
 import de.rangun.spiget.PluginClient;
+import github.scarsz.discordsrv.DiscordSRV;
 
 /**
  * @author heiko
@@ -81,6 +82,7 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 	private FileConfiguration config = getConfig();
 	private FileConfiguration messages = null;
 	private Scoreboard sb = null;
+	private boolean discordSRVavailable = false;
 
 	private final static String PINK_BULL_TEXT = ChatColor.LIGHT_PURPLE + "Pink Bull" + ChatColor.RESET;
 
@@ -101,6 +103,8 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 		recipe.setIngredient('M', Material.MAGMA_CREAM);
 
 		Bukkit.addRecipe(recipe);
+
+		discordSRVavailable = getServer().getPluginManager().getPlugin("DiscordSRV") != null;
 
 		getServer().getPluginManager().registerEvents(new JoinListener(this, spigetClient), this);
 		getServer().getPluginManager().registerEvents(new PlayerItemConsumeListener(this), this);
@@ -254,7 +258,13 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 
 				}.runTaskTimer(this, 20L, 20L);
 
-				getServer().broadcastMessage(getMessage("Pinkbull_quaffed", player, duration));
+				final String pbQuaffed = getMessage("Pinkbull_quaffed", player, duration);
+
+				getServer().broadcastMessage(pbQuaffed);
+
+				if (discordSRVavailable) {
+					sendToDiscordSRV(pbQuaffed, player);
+				}
 
 			} else {
 
@@ -274,6 +284,18 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 		player.setAllowFlight(allow);
 		player.getPersistentDataContainer().set(PINK_BULL_POTION_KEY, PersistentDataType.LONG,
 				allow ? (donor == null ? (duration == -1L ? getFlyTicks() : duration) : -1L) : 0L);
+	}
+
+	private void sendToDiscordSRV(final String message, Player player) {
+
+		if (discordSRVavailable) {
+
+			DiscordSRV.getPlugin().processChatMessage(player, message, DiscordSRV.getPlugin().getMainChatChannel(),
+					false, null);
+
+			// WebhookUtil.deliverMessage(DiscordSRV.getPlugin().getMainTextChannel(),
+			// player, message);
+		}
 	}
 
 	private void flyEndMessage(final Player player) {

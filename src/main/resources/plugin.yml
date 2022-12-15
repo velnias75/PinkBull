@@ -4,6 +4,7 @@ version: '@version@'
 description: PinkBull verleiht Flügel!
 author: Velnias75
 website: https://www.spigotmc.org/resources/pinkbull.102050/
+softdepend: [DiscordSRV]
 commands:
   fly:
     description: enables the player to just fly unlimited.
