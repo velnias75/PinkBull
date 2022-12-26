@@ -6,6 +6,7 @@ plugins {
 }
 
 apply plugin: 'java'
+apply plugin: 'maven-publish'
 
 archivesBaseName = 'PinkBull'
 version = '1.5-SNAPSHOT'
@@ -97,6 +98,19 @@ assemble {
 	dependsOn shadowJar
 }
 
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId = 'de.rangun'
+            artifactId = archivesBaseName
+            from components.java
+        }
+    }
+    repositories {
+        mavenLocal()
+    }
+}
+
 test {
     testLogging {
       events "failed"
@@ -108,4 +122,4 @@ test {
 
       showStandardStreams = false
     }
-  }
+}

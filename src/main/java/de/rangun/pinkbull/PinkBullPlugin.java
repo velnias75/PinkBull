@@ -156,8 +156,9 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 		final PotionEffect effect = new PotionEffect(PotionEffectType.LEVITATION, duration, 0, false, false, false);
 		final ItemStack potion = new ItemStack(Material.POTION);
 		final PotionMeta meta = (PotionMeta) potion.getItemMeta();
-		final List<String> lore = ImmutableList.of(getMessage("PinkBull_slogan"), "",
-				getMessage("PinkBull_lore_duration_line_1"), getMessage("PinkBull_lore_duration_line_2", duration), "");
+		final List<String> lore = messages != null ? ImmutableList.of(getMessage("PinkBull_slogan"), "",
+				getMessage("PinkBull_lore_duration_line_1"), getMessage("PinkBull_lore_duration_line_2", duration), "")
+				: List.of();
 
 		meta.setLore(lore);
 		meta.setColor(Color.fromRGB(255, 192, 203));
@@ -165,7 +166,10 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 		meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 		meta.setDisplayName(PINK_BULL_TEXT);
 		meta.addCustomEffect(effect, true);
-		meta.setCustomModelData(config.getInt("custom_model_data", 1));
+
+		if (config != null) {
+			meta.setCustomModelData(config.getInt("custom_model_data", 1));
+		}
 
 		meta.getPersistentDataContainer().set(PINK_BULL_POTION_KEY, PersistentDataType.BYTE, (byte) 1);
 
@@ -261,10 +265,7 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 				final String pbQuaffed = getMessage("Pinkbull_quaffed", player, duration);
 
 				getServer().broadcastMessage(pbQuaffed);
-
-				if (discordSRVavailable) {
-					sendToDiscordSRV(pbQuaffed, player);
-				}
+				sendToDiscordSRV(pbQuaffed, player);
 
 			} else {
 
@@ -286,7 +287,7 @@ public final class PinkBullPlugin extends JavaPlugin implements IPinkBullPlugin 
 				allow ? (donor == null ? (duration == -1L ? getFlyTicks() : duration) : -1L) : 0L);
 	}
 
-	private void sendToDiscordSRV(final String message, Player player) {
+	private void sendToDiscordSRV(final String message, final Player player) {
 
 		if (discordSRVavailable) {
 
